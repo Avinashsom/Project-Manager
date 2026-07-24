@@ -1,0 +1,20 @@
+{
+  "name": "project_management",
+  "version": "1.0.0",
+  "description": "A project management application ",
+  "keywords": [
+    "Backend",
+    "Api",
+    "project"
+  ],
+  "license": "ISC",
+  "author": "Avinash Som",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "devDependencies": {
+    "prettier": "3.9.6"
+  }
+}
