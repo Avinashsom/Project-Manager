@@ -147,7 +147,7 @@ const logoutUser = asyncHandler(async (req,res) => {
             "user logged out successfully"
         )
     )
-})
+});
 
 const getCurrentUser = asyncHandler(async (req,res) => {
     return res
