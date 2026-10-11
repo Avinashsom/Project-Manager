@@ -58,9 +58,19 @@ const userForgetPasswordValidator = () => {
             .withMessage("email is invalid")
     ]
 }
+
+const userResetForgetPasswordValidator = () => {
+    return [
+        body("newPassword")
+            .notEmpty()
+            .withMessage("New password is required")
+
+    ]
+}
 export {
     userRegisterValidator,
     userLoginValidator,
     userChangeCurrentPasswordValidator,
-    userForgetPasswordValidator
+    userForgetPasswordValidator,
+    userResetForgetPasswordValidator
 }
