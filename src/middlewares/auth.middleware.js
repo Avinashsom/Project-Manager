@@ -1,11 +1,11 @@
-import { User } from '../models/user.model.js';
+import { User } from '../models/user.models.js';
 import jwt from 'jsonwebtoken';
-import { ApiError } from '../utils/apiError.js';
+import { ApiError } from '../utils/api-error.js';
 import  { asyncHandler } from '../utils/async-handler.js';
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
     //get token from cookie and header.because cookie is not in mobile app
-    const token = req.cookie?.accessToken || req.header('Authorization')?.replace('Bearer ', '')
+    const token = req.cookies?.accessToken || req.header('Authorization')?.replace('Bearer ', '')
 
     if(!token){
         throw new ApiError(401, "Unauthorized access")
