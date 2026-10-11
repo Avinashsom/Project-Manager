@@ -295,7 +295,7 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
     }catch (error) {
         throw new ApiError(401, "Invalid refresh token");
     }
-})
+});
 
 const forgetPasswordRequest = asyncHandler(async (req,res) => {
     const {email} = req.body
