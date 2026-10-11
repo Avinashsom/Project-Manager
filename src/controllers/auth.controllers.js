@@ -333,7 +333,7 @@ const forgetPasswordRequest = asyncHandler(async (req,res) => {
         )
     )
 
-})
+});
 
 const resetForgetPassword = asyncHandler(async (req,res) => {
     const {resetToken} = req.params
@@ -373,7 +373,7 @@ const resetForgetPassword = asyncHandler(async (req,res) => {
             "Password reset successful"
         )
     )
-})
+});
 
 const changeCurrentPassword = asyncHandler(async (req,res) => {
     const {oldPassword, newPassword} = req.body
@@ -397,7 +397,7 @@ const changeCurrentPassword = asyncHandler(async (req,res) => {
             "Password changed successfully"
         )
     )
-})
+});
 
 
 export{
