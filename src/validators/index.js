@@ -108,6 +108,38 @@ const updateProjectValidator = () => {
     ]
 }
 
+const addMemberValidator = () => {
+    return [
+        body("email")
+            .trim()
+            .notEmpty()
+            .withMessage("Email is required")
+            .isEmail()
+            .withMessage("Email is invalid"),
+        body("role")
+            .optional()
+            .isIn(AvailableUserRole)
+            .withMessage(`Role must be one of: ${AvailableUserRole.join(", ")}`),
+    ]
+}
+
+const updateMemberRoleValidator = () => {
+    return [
+        body("role")
+            .notEmpty()
+            .withMessage("Role is required")
+            .isIn(AvailableUserRole)
+            .withMessage(`Role must be one of: ${AvailableUserRole.join(", ")}`),
+    ];
+};
+
+const memberParamValidator = () => {
+    return [
+        param("projectId").isMongoId().withMessage("Invalid project id"),
+        param("userId").isMongoId().withMessage("Invalid user id"),
+    ];
+};
+
 export {
     userRegisterValidator,
     userLoginValidator,
@@ -116,5 +148,8 @@ export {
     userResetForgetPasswordValidator,
     createProjectValidator,
     projectIdParamValidator,
-    updateProjectValidator
+    updateProjectValidator,
+    addMemberValidator,
+    updateMemberRoleValidator,
+    memberParamValidator,
 }
