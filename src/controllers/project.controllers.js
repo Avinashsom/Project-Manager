@@ -288,5 +288,6 @@ export {
     getProjectMembers,
     addMemberToProject,
     updateMemberRole,
-    removeMember
+    removeMember,
+    assertNotLastAdmin
 };
