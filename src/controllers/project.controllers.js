@@ -102,4 +102,54 @@ const getProjectById = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, data, "Project fetched successfully"));
 });
 
-export { createProject, getProjects, getProjectById };
+const updateProject = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+    const { name, description } = req.body;
+
+    const updates = {};
+    if (name !== undefined) updates.name = name;
+    if (description !== undefined) updates.description = description;
+
+    if (Object.keys(updates).length === 0) {
+        throw new ApiError(400, "Provide at least one field to update");
+    }
+
+    const project = await Project.findByIdAndUpdate(
+        projectId,
+        { $set: updates },
+        { new: true, runValidators: true },
+    );
+
+    if (!project) {
+        throw new ApiError(404, "Project not found");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, project, "Project updated successfully"));
+});
+
+const deleteProject = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+
+    const project = await Project.findByIdAndDelete(projectId);
+
+    if (!project) {
+        throw new ApiError(404, "Project not found");
+    }
+
+    // Cascade. Tasks, subtasks and notes will be added here as we build them.
+    await ProjectMember.deleteMany({ project: projectId });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { _id: project._id }, "Project deleted successfully"));
+});
+
+export { 
+    createProject, 
+    getProjects, 
+    getProjectById, 
+    updateProject, 
+    deleteProject 
+};
