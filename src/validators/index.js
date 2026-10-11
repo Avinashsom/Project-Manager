@@ -152,4 +152,4 @@ export {
     addMemberValidator,
     updateMemberRoleValidator,
     memberParamValidator,
-}
+};
