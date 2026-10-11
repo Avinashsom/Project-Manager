@@ -84,11 +84,18 @@ const createProjectValidator = () => {
     ]
 }
 
+const projectIdParamValidator = () => {
+    return [
+        param("projectId").isMongoId().withMessage("Invalid project id"),
+    ]
+}
+
 export {
     userRegisterValidator,
     userLoginValidator,
     userChangeCurrentPasswordValidator,
     userForgetPasswordValidator,
     userResetForgetPasswordValidator,
-    createProjectValidator
+    createProjectValidator,
+    projectIdParamValidator
 }
