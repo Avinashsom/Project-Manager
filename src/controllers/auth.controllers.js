@@ -159,7 +159,7 @@ const getCurrentUser = asyncHandler(async (req,res) => {
             "Current user fetched successfully" 
         )
     )
-})
+});
 
 const verifyEmail = asyncHandler(async (req,res) => {
     //take data from url by params
@@ -206,7 +206,7 @@ const verifyEmail = asyncHandler(async (req,res) => {
             "EMAIL VERIFICATION SUCCESSFUL"
         )
     )
-})
+});
 
 const resendEmailVerification = asyncHandler(async (req,res) => {
     const user = await User.findById(req.user?._id);
@@ -246,7 +246,7 @@ const resendEmailVerification = asyncHandler(async (req,res) => {
             "Verification email resent successfully"
         )
     )
-})
+});
 
 const refreshAccessToken = asyncHandler(async (req,res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
