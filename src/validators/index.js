@@ -90,6 +90,24 @@ const projectIdParamValidator = () => {
     ]
 }
 
+const updateProjectValidator = () => {
+    return [
+        body("name")
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage("Project name cannot be empty")
+        .isLength({ max: 100 })
+        .withMessage("Project name must be at most 100 characters"),
+    body("description")
+        .optional()
+        .trim()
+        .isLength({ max: 500 })
+        .withMessage("Description must be at most 500 characters"),
+
+    ]
+}
+
 export {
     userRegisterValidator,
     userLoginValidator,
@@ -97,5 +115,6 @@ export {
     userForgetPasswordValidator,
     userResetForgetPasswordValidator,
     createProjectValidator,
-    projectIdParamValidator
+    projectIdParamValidator,
+    updateProjectValidator
 }
