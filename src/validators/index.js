@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 const userRegisterValidator = () => {
     return[
@@ -68,10 +68,27 @@ const userResetForgetPasswordValidator = () => {
     ]
 }
 
+const createProjectValidator = () => {
+    return [
+        body("name")
+        .trim()
+        .notEmpty()
+        .withMessage("Project name is required")
+        .isLength({ max: 100 })
+        .withMessage("Project name must be at most 100 characters"),
+    body("description")
+        .optional()
+        .trim()
+        .isLength({ max: 500 })
+        .withMessage("Description must be at most 500 characters"),
+    ]
+}
+
 export {
     userRegisterValidator,
     userLoginValidator,
     userChangeCurrentPasswordValidator,
     userForgetPasswordValidator,
-    userResetForgetPasswordValidator
+    userResetForgetPasswordValidator,
+    createProjectValidator
 }
