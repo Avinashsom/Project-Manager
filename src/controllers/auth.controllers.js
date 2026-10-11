@@ -3,6 +3,8 @@ import { ApiResponse} from "../utils/api-response.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { ApiError} from "../utils/api-error.js"
 import {emailVerificationMailgenContent, sendEmail} from "../utils/mail.js"
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -247,6 +249,54 @@ const resendEmailVerification = asyncHandler(async (req,res) => {
     )
 })
 
+const refreshAccessToken = asyncHandler(async (req,res) => {
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+    if(!incomingRefreshToken){
+        throw new ApiError(401, "Unauthorized Access: Refresh token is required");
+    }
+
+    try {
+        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+        const user = await User.findById(decodedToken?._id);
+
+        if(!user){
+            throw new ApiError(401, "Unauthorized: User not found");
+        }
+
+        if(user?.refreshToken !== incomingRefreshToken){
+            throw new ApiError(401, "refresh token is expired or does not match");
+        }
+
+        const options ={
+            httpOnly: true,
+            secure: true
+        }
+
+        const {accessToken, refreshToken: newRefreshToken} = await generateAccessAndRefreshToken(user._id)
+
+        user.refreshToken = newRefreshToken
+        await user.save({validateBeforeSave: false})
+
+        return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", newRefreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    accessToken,
+                    refreshToken: newRefreshToken
+                },
+                "Refresh token refreshed successfully"
+            )
+        )
+    }catch (error) {
+        throw new ApiError(401, "Invalid refresh token");
+    }
+})
 
 
 
@@ -261,5 +311,6 @@ export{
     logoutUser,
     getCurrentUser,
     verifyEmail,
-    resendEmailVerification
+    resendEmailVerification,
+    refreshAccessToken
 };
