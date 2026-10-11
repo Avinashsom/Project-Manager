@@ -67,6 +67,7 @@ const userResetForgetPasswordValidator = () => {
 
     ]
 }
+
 export {
     userRegisterValidator,
     userLoginValidator,
