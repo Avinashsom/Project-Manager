@@ -159,6 +159,54 @@ const getCurrentUser = asyncHandler(async (req,res) => {
     )
 })
 
+const verifyEmail = asyncHandler(async (req,res) => {
+    //take data from url by params
+    const {verificationToken} = req.params
+
+    if(!verificationToken){
+        throw new ApiError(400, "Email Verification token is required")
+    }
+
+    //given hashed value from unhashed token
+    let hashedToken = crypto
+    .createHash("sha256")
+    .update(verificationToken)
+    .digest("hex")
+
+    const user = await User.findOne({
+        emailVerificationToken: hashedToken,
+        emailVerificationExpiry: {$gt: Date.now()}
+    })
+
+    if(!user){
+        throw new ApiError(400, "Invalid or expired email verification token")
+    }
+
+    user.isEmailVerified = true;
+
+    //remove the email verification token and expiry after successful verification
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpiry = undefined;
+
+    //what done validatebeforesave: false is used to skip the validation of the model before saving it to the database.
+    //In Mongoose, when you call the save() method on a document, it runs validation checks based on the schema defined for that model.
+    //If any of the fields do not meet the validation criteria, an error will be thrown, and the document will not be saved.
+    await user.save({validateBeforeSave: false})
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                isEmailVerified: true,
+            },
+            "EMAIL VERIFICATION SUCCESSFUL"
+        )
+    )
+})
+
+
 // const getCurrentUser = asyncHandler(async (req,res) => {
 
 // })
@@ -166,5 +214,6 @@ export{
     registerUser,
     login,
     logoutUser,
-    getCurrentUser
+    getCurrentUser,
+    verifyEmail
 };
