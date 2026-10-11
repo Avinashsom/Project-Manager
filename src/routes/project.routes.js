@@ -5,7 +5,7 @@ import {
     getProjectById,
 } from "../controllers/project.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { validate } from "../middlewares/validator.middleware.js";
+import { validateRequest } from "../middlewares/validator.middleware.js";
 import {
     createProjectValidator,
     projectIdParamValidator,
@@ -18,10 +18,10 @@ router.use(verifyJWT);
 router
     .route("/")
     .get(getProjects)
-    .post(createProjectValidator(), validate, createProject);
+    .post(createProjectValidator(), validateRequest, createProject);
 
 router
     .route("/:projectId")
-    .get(projectIdParamValidator(), validate, getProjectById);
+    .get(projectIdParamValidator(), validateRequest, getProjectById);
 
 export default router;
