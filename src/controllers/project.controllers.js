@@ -6,6 +6,10 @@ import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { User } from "../models/user.models.js";
+import { Task } from "../models/task.models.js";
+import { SubTask } from "../models/subtask.models.js";
+import { removeFilesByUrls } from "../utils/file.js";
+import { Note } from "../models/note.models.js";
 
 const createProject = asyncHandler(async (req, res) => {
     const { name, description } = req.body;
@@ -140,8 +144,18 @@ const deleteProject = asyncHandler(async (req, res) => {
     }
 
     // Cascade. Tasks, subtasks and notes will be added here as we build them.
+    // Delete the files of every task in this project
+    const tasks = await Task.find({ project: projectId });
+    tasks.forEach((task) => removeFilesByUrls(task.attachments));
+
+    // Delete everything that belongs to this project
+    await SubTask.deleteMany({ project: projectId });
+    await Task.deleteMany({ project: projectId });
     await ProjectMember.deleteMany({ project: projectId });
 
+    await Note.deleteMany({ project: projectId });
+
+    
     return res
         .status(200)
         .json(new ApiResponse(200, { _id: project._id }, "Project deleted successfully"));
